@@ -1,17 +1,31 @@
+import { Toaster } from './components/feedback/Toaster';
+import { useState } from 'react'
 import { AppLayout } from './components/layout/AppLayout'
 import { ThemeProvider } from './components/theme-provider'
+import { PinLockPage } from './pages/PinLockPage'
 
 export default function App() {
+  const [unlocked, setUnlocked] = useState(false)
+
+  if (!unlocked) {
+    return (
+      <ThemeProvider defaultTheme="system" storageKey="vyapaarvault-ui-theme">
+        <PinLockPage onUnlock={() => setUnlocked(true)} />
+      </ThemeProvider>
+    )
+  }
+
   return (
     <ThemeProvider defaultTheme="system" storageKey="vyapaarvault-ui-theme">
       <AppLayout>
+        <Toaster />
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <div className="rounded-xl border bg-card text-card-foreground shadow">
             <div className="p-6">
               <h3 className="font-semibold leading-none tracking-tight">VyapaarVault Portable</h3>
               <p className="text-sm text-muted-foreground mt-2">
-                Phase 0 setup is now complete with all basic layout components, full database schema, and directory creation mechanisms.
+                Phase 1 setup is now complete with all basic layout components, full database schema, directory creation mechanisms, auth flows, state management, and basic IPC framework.
               </p>
             </div>
           </div>

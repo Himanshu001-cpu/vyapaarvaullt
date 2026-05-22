@@ -1,13 +1,29 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron';
 
 if (!process.contextIsolated) {
-  throw new Error('contextIsolation must be enabled in the BrowserWindow')
+  throw new Error('contextIsolation must be enabled in the BrowserWindow');
 }
 
 try {
   contextBridge.exposeInMainWorld('api', {
-    // API will go here
-  })
+    auth: {
+      checkPinSet: () => ipcRenderer.invoke('auth:checkPinSet'),
+      setupPin: (data: unknown) => ipcRenderer.invoke('auth:setupPin', data),
+      login: (data: unknown) => ipcRenderer.invoke('auth:login', data),
+      changePin: (data: unknown) => ipcRenderer.invoke('auth:changePin', data),
+      validateSession: () => ipcRenderer.invoke('auth:validateSession'),
+    },
+    settings: {
+      getAll: () => ipcRenderer.invoke('settings:getAll'),
+      update: (data: unknown) => ipcRenderer.invoke('settings:update', data),
+    },
+    backup: {
+      create: () => ipcRenderer.invoke('backup:create'),
+    },
+    audit: {
+      list: () => ipcRenderer.invoke('audit:list'),
+    }
+  });
 } catch (error) {
-  console.error(error)
+  console.error(error);
 }

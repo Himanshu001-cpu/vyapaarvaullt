@@ -31,7 +31,7 @@ function createWindow(): void {
     autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
+      sandbox: true,
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -61,6 +61,11 @@ app.whenReady().then(() => {
   })
 
   setupDirectories();
+  require("./ipc/auth.handlers").registerAuthHandlers();
+  require("./ipc/settings.handlers").registerSettingsHandlers();
+  require("./ipc/backup.handlers").registerBackupHandlers();
+  require("./ipc/audit.handlers").registerAuditHandlers();
+
   runMigrations();
   createWindow()
 
