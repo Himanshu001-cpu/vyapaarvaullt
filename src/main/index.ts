@@ -67,6 +67,7 @@ app.whenReady().then(async () => {
   require("./ipc/analytics.handlers").registerAnalyticsHandlers();
   require("./ipc/search.handlers").registerSearchHandlers();
   require("./ipc/import-export.handlers").registerImportExportHandlers();
+  require("./ipc/dialog.handlers").registerDialogHandlers();
 
   runMigrations();
   await seedDatabase();

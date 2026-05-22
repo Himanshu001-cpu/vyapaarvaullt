@@ -12,7 +12,6 @@ export function SettingsPage() {
 
   const [businessName, setBusinessName] = useState('');
   const [ssdRoot, setSsdRoot] = useState('');
-  const [importPath, setImportPath] = useState('');
 
   useEffect(() => {
     loadSettings();
@@ -47,13 +46,23 @@ export function SettingsPage() {
   };
 
   const handleImport = async () => {
-     if(!importPath) return;
-     const success = await importData(importPath, 'customers', {});
-     if (success) {
-        toast({ title: 'Import Complete', description: 'Data successfully imported.' });
-        setImportPath('');
-     } else {
-        toast({ title: 'Import Failed', description: 'Error importing data.' });
+     try {
+       const dialogResp = await window.api.dialog.openFile({
+         properties: ['openFile'],
+         filters: [{ name: 'Excel Files', extensions: ['xlsx', 'xls'] }]
+       });
+
+       if (dialogResp.success && dialogResp.data) {
+         const filePath = dialogResp.data;
+         const success = await importData(filePath, 'customers', {});
+         if (success) {
+            toast({ title: 'Import Complete', description: 'Data successfully imported.' });
+         } else {
+            toast({ title: 'Import Failed', description: 'Error importing data.' });
+         }
+       }
+     } catch (e) {
+        toast({ title: 'Error', description: 'Could not open file dialog' });
      }
   };
 
@@ -91,13 +100,10 @@ export function SettingsPage() {
             </div>
             <div className="border p-4 rounded-lg">
                <h4 className="font-medium mb-2">Import Customers (Excel)</h4>
-               <p className="text-sm text-muted-foreground mb-4">Provide absolute path to .xlsx file for import.</p>
-               <div className="flex gap-2">
-                  <input type="text" placeholder="/path/to/file.xlsx" value={importPath} onChange={e => setImportPath(e.target.value)} className="w-full p-2 bg-input border rounded-md text-sm" />
-                  <button onClick={handleImport} disabled={isImporting || !importPath} className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm disabled:opacity-50">
-                     Import
-                  </button>
-               </div>
+               <p className="text-sm text-muted-foreground mb-4">Select an .xlsx file to import customer data.</p>
+               <button onClick={handleImport} disabled={isImporting} className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm w-full disabled:opacity-50">
+                  {isImporting ? 'Importing...' : 'Select File & Import'}
+               </button>
             </div>
          </div>
       </div>

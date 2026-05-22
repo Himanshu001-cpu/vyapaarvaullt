@@ -28,14 +28,12 @@ export class InvoiceService {
   static async createInvoice(payload: CreateInvoicePayload) {
     const party = await PartyRepository.getById(payload.partyId);
     if (!party) throw new Error('PARTY_NOT_FOUND');
-    if (payload.items.length === 0) throw new Error('VALIDATION_ERROR'); // Need at least one item
+    if (payload.items.length === 0) throw new Error('VALIDATION_ERROR');
 
     let finalInvoiceId = 0;
     let finalInvoiceNumber = '';
 
-    // Atomic 6-step transaction
     await db.transaction(async (tx) => {
-      // 1. Validate Stock & Gather Product Data
       let subtotal = 0;
       const productsData: any[] = [];
 
@@ -71,7 +69,6 @@ export class InvoiceService {
       const amountPaid = payload.amountPaid || 0;
       const pendingAmount = totalAmount - amountPaid;
 
-      // 2. Create Invoice
       const invoiceNumber = await InvoiceRepository.getNextInvoiceNumber(tx);
       const invoiceData: InvoiceCreateData = {
          invoice_number: invoiceNumber,
@@ -90,7 +87,6 @@ export class InvoiceService {
       finalInvoiceId = invoice.id;
       finalInvoiceNumber = invoiceNumber;
 
-      // 3. Create Invoice Items
       const invoiceItems: InvoiceItemCreateData[] = productsData.map(p => ({
          invoice_id: invoice.id,
          product_id: p.product.id,
@@ -103,7 +99,6 @@ export class InvoiceService {
       }));
       await InvoiceItemRepository.bulkCreate(invoiceItems, tx);
 
-      // 4. Deduct Stock & Create Stock Movements
       for (const p of productsData) {
          await ProductRepository.updateStock(p.product.id, -p.quantity, tx);
          await StockMovementRepository.create({
@@ -115,18 +110,16 @@ export class InvoiceService {
          }, tx);
       }
 
-      // 5. Create Transaction (if payment made)
       if (amountPaid > 0) {
          await TransactionRepository.create({
              party_id: payload.partyId,
              invoice_id: invoice.id,
-             type: 'credit', // Money in from customer (assuming sales invoice for MVP)
+             type: 'credit',
              amount: amountPaid,
              note: `Payment for Invoice ${invoiceNumber}`
          }, tx);
       }
 
-      // 6. Audit Log
       await AuditService.logAction('create', 'invoice', invoice.id, null, invoiceData, tx);
     });
 
@@ -142,33 +135,29 @@ export class InvoiceService {
     const items = await InvoiceItemRepository.getByInvoiceId(id);
 
     await db.transaction(async (tx) => {
-        // 1. Update status
         await InvoiceRepository.updateStatus(id, 'voided', tx);
 
-        // 2. Restore Stock
         for (const item of items) {
            await ProductRepository.updateStock(item.product_id, item.quantity, tx);
            await StockMovementRepository.create({
               product_id: item.product_id,
               invoice_id: id,
-              movement_type: 'undo', // Undoing the invoice
+              movement_type: 'undo',
               quantity_change: item.quantity,
               note: `Voided Invoice ${existing.invoice_number}`
            }, tx);
         }
 
-        // 3. Reversal Transaction (if amount was paid)
         if (existing.amount_paid && existing.amount_paid > 0) {
            await TransactionRepository.create({
                party_id: existing.party_id,
                invoice_id: id,
-               type: 'debit', // Money returned/credited back to customer
+               type: 'debit',
                amount: existing.amount_paid,
                note: `Reversal for Voided Invoice ${existing.invoice_number}`
            }, tx);
         }
 
-        // 4. Audit Log
         await AuditService.logAction('void', 'invoice', id, { status: 'completed' }, { status: 'voided', reason }, tx);
     });
 
@@ -192,5 +181,84 @@ export class InvoiceService {
 
   static async searchInvoices(query: string, limit?: number) {
     return InvoiceRepository.search(query, limit);
+  }
+
+  static async generatePdf(id: number): Promise<{ filePath: string }> {
+    const { invoice, items, party } = await this.getInvoice(id);
+    const html = `
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            .header { display: flex; justify-content: space-between; margin-bottom: 40px; }
+            .total { font-weight: bold; text-align: right; margin-top: 20px; font-size: 1.2em; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+             <div>
+                <h2>INVOICE</h2>
+                <p><strong>#${invoice.invoice_number}</strong></p>
+                <p>Date: ${new Date(invoice.created_at).toLocaleDateString()}</p>
+             </div>
+             <div style="text-align: right;">
+                <h3>Bill To:</h3>
+                <p>${party?.name}</p>
+                <p>${party?.phone || ''}</p>
+             </div>
+          </div>
+          <table>
+             <thead>
+               <tr>
+                 <th>Item</th>
+                 <th>Qty</th>
+                 <th>Price</th>
+                 <th>Total</th>
+               </tr>
+             </thead>
+             <tbody>
+               ${items.map((item: any) => `
+                 <tr>
+                   <td>${item.product_name_snapshot}</td>
+                   <td>${item.quantity} ${item.unit_snapshot}</td>
+                   <td>₹${item.selling_price_snapshot}</td>
+                   <td>₹${item.total}</td>
+                 </tr>
+               `).join('')}
+             </tbody>
+          </table>
+          <div class="total">
+             <p>Subtotal: ₹${invoice.subtotal}</p>
+             <p>Discount: ₹${invoice.discount}</p>
+             <p>Total: ₹${invoice.total_amount}</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    return new Promise((resolve, reject) => {
+      const { BrowserWindow } = require('electron');
+      const { FileService } = require('./file.service');
+      const { join } = require('path');
+      const { writeFileSync } = require('fs');
+
+      const win = new BrowserWindow({ show: false });
+      win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
+
+      win.webContents.on('did-finish-load', () => {
+        win.webContents.printToPDF({}).then(data => {
+          const exportsDir = FileService.getBasePath() + '/exports';
+          const filePath = join(exportsDir, `Invoice-${invoice.invoice_number}.pdf`);
+          writeFileSync(filePath, data);
+          win.close();
+          resolve({ filePath });
+        }).catch(err => {
+          win.close();
+          reject(err);
+        });
+      });
+    });
   }
 }

@@ -73,6 +73,7 @@ try {
       get: (data: unknown) => ipcRenderer.invoke('invoice:get', data),
       list: (data: unknown) => ipcRenderer.invoke('invoice:list', data),
       search: (data: unknown) => ipcRenderer.invoke('invoice:search', data),
+      generatePdf: (data: unknown) => ipcRenderer.invoke('invoice:generatePdf', data),
     },
     analytics: {
       dashboard: () => ipcRenderer.invoke('analytics:dashboard'),
@@ -83,6 +84,10 @@ try {
     importExport: {
       importExcel: (data: unknown) => ipcRenderer.invoke('import:excel', data),
       exportExcel: (data: unknown) => ipcRenderer.invoke('export:excel', data),
+    },
+    dialog: {
+      openFile: (options: unknown) => ipcRenderer.invoke('dialog:openFile', options),
+      saveFile: (options: unknown) => ipcRenderer.invoke('dialog:saveFile', options),
     }
   });
 } catch (error) {

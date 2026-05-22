@@ -1,12 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useInvoiceStore } from '../store/invoiceStore';
 import { LoadingState, ErrorState, EmptyState } from '../components/feedback/States';
-import { FileText } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
 export function InvoiceListPage() {
   const { invoices, isLoading, error, loadInvoices, voidInvoice } = useInvoiceStore();
   const { toast } = useToast();
+  const [generatingPdf, setGeneratingPdf] = useState<number | null>(null);
 
   useEffect(() => {
     loadInvoices();
@@ -19,6 +20,21 @@ export function InvoiceListPage() {
              toast({ title: 'Invoice Voided', description: 'Stock and balances have been reverted.' });
          }
      }
+  };
+
+  const handleGeneratePdf = async (id: number) => {
+    setGeneratingPdf(id);
+    try {
+       const resp = await window.api.invoice.generatePdf({ id });
+       if (resp.success) {
+         toast({ title: 'PDF Generated', description: `Saved to ${resp.data?.filePath}` });
+       } else {
+         toast({ title: 'PDF Failed', description: 'Failed to generate PDF' });
+       }
+    } catch(e) {
+       toast({ title: 'PDF Failed', description: 'Unexpected error' });
+    }
+    setGeneratingPdf(null);
   };
 
   if (isLoading && invoices.length === 0) return <LoadingState />;
@@ -63,7 +79,15 @@ export function InvoiceListPage() {
                         {inv.status.toUpperCase()}
                      </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right flex justify-end gap-3">
+                     <button
+                       onClick={() => handleGeneratePdf(inv.id)}
+                       disabled={generatingPdf === inv.id}
+                       className="text-xs text-primary hover:underline flex items-center gap-1"
+                     >
+                       <Download className="w-3 h-3" />
+                       {generatingPdf === inv.id ? 'Generating...' : 'PDF'}
+                     </button>
                      {inv.status === 'completed' && (
                          <button onClick={() => handleVoid(inv.id)} className="text-xs text-destructive hover:underline">
                            Void

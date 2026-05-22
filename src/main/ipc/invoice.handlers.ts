@@ -5,13 +5,13 @@ import {
   voidInvoiceSchema,
   getInvoiceSchema,
   listInvoiceSchema,
-  searchInvoiceSchema
+  searchInvoiceSchema,
+  generatePdfSchema
 } from '../validation/invoice.schema';
 
 export function registerInvoiceHandlers() {
   registerIpcHandler('invoice:create', createInvoiceSchema, authGuard(async (payload) => {
     try {
-      // Mapping the payload to what the service expects
       const servicePayload: CreateInvoicePayload = {
          partyId: payload.partyId,
          items: payload.items,
@@ -67,5 +67,15 @@ export function registerInvoiceHandlers() {
   registerIpcHandler('invoice:search', searchInvoiceSchema, authGuard(async (payload) => {
     const data = await InvoiceService.searchInvoices(payload.query, payload.limit);
     return { success: true, data };
+  }));
+
+  registerIpcHandler('invoice:generatePdf', generatePdfSchema, authGuard(async (payload) => {
+    try {
+      const data = await InvoiceService.generatePdf(payload.id);
+      return { success: true, data };
+    } catch(e: any) {
+      if (e.message === 'NOT_FOUND') return { success: false, error: { code: 'NOT_FOUND', message: 'Invoice not found' }};
+      throw e;
+    }
   }));
 }

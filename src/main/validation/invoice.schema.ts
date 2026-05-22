@@ -24,6 +24,10 @@ export const getInvoiceSchema = z.object({
   id: z.number().int().positive(),
 });
 
+export const generatePdfSchema = z.object({
+  id: z.number().int().positive(),
+});
+
 export const listInvoiceSchema = z.object({
   partyId: z.number().int().positive().optional().nullable(),
   status: z.enum(['completed', 'voided']).optional().nullable(),
