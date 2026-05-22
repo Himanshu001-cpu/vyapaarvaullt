@@ -70,7 +70,7 @@ export function InvoiceListPage() {
             <tbody>
               {invoices.map((inv) => (
                 <tr key={inv.id} className={`border-b last:border-0 hover:bg-muted/50 ${inv.status === 'voided' ? 'opacity-50' : ''}`}>
-                  <td className="px-6 py-4 font-medium">{inv.invoice_number}</td>
+                  <td className="px-6 py-4 font-medium"><a href={`#/invoice/${inv.id}`} className="text-primary hover:underline">{inv.invoice_number}</a></td>
                   <td className="px-6 py-4">{new Date(inv.created_at).toLocaleDateString()}</td>
                   <td className="px-6 py-4">{inv.party_name}</td>
                   <td className="px-6 py-4 font-semibold">₹{inv.total_amount}</td>

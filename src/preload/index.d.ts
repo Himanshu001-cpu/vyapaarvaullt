@@ -81,6 +81,10 @@ declare global {
         importExcel: (data: any) => Promise<ApiResponse<any>>;
         exportExcel: (data: any) => Promise<ApiResponse<any>>;
       };
+      undo: {
+        perform: (data: { auditLogId: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        history: (data?: { limit?: number }) => Promise<ApiResponse<any[]>>;
+      };
       dialog: {
         openFile: (options: any) => Promise<ApiResponse<string | null>>;
         saveFile: (options: any) => Promise<ApiResponse<string | null>>;

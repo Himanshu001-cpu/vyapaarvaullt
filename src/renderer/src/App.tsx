@@ -1,3 +1,4 @@
+import { InvoiceDetailPage } from './pages/InvoiceDetailPage';
 import { useState, useEffect } from 'react'
 import { AppLayout } from './components/layout/AppLayout'
 import { ThemeProvider } from './components/theme-provider'
@@ -46,6 +47,11 @@ export default function App() {
   }
 
   const renderPage = () => {
+    if (currentRoute.startsWith('#/invoice/')) {
+        const id = parseInt(currentRoute.split('/')[2], 10);
+        return <InvoiceDetailPage invoiceId={id} />;
+    }
+
     if (currentRoute.startsWith('#/party/')) {
         const id = parseInt(currentRoute.split('/')[2], 10);
         return <CustomerLedgerPage partyId={id} />;

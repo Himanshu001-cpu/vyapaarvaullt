@@ -12,3 +12,4 @@ data/
 backups/
 exports/
 config/
+src/main/database/migrate.ts

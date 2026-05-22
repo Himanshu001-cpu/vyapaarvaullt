@@ -84,6 +84,10 @@ try {
       importExcel: (data: unknown) => ipcRenderer.invoke('import:excel', data),
       exportExcel: (data: unknown) => ipcRenderer.invoke('export:excel', data),
     },
+    undo: {
+      perform: (data: unknown) => ipcRenderer.invoke('undo:perform', data),
+      history: (data: unknown) => ipcRenderer.invoke('undo:history', data),
+    },
     dialog: {
       openFile: (options: unknown) => ipcRenderer.invoke('dialog:openFile', options),
       saveFile: (options: unknown) => ipcRenderer.invoke('dialog:saveFile', options),
