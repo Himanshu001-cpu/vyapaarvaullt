@@ -29,6 +29,34 @@ declare global {
         search: (data: { query: string, type?: string, limit?: number }) => Promise<ApiResponse<any[]>>;
         list: (data: { type?: string, includeDeleted?: boolean, page?: number, pageSize?: number }) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
       };
+      category: {
+        create: (data: any) => Promise<ApiResponse<{ id: number }>>;
+        update: (data: any) => Promise<ApiResponse<{ success: boolean }>>;
+        delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        list: () => Promise<ApiResponse<any[]>>;
+      };
+      unit: {
+        create: (data: any) => Promise<ApiResponse<{ id: number }>>;
+        update: (data: any) => Promise<ApiResponse<{ success: boolean }>>;
+        delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        list: () => Promise<ApiResponse<any[]>>;
+      };
+      conversion: {
+        create: (data: any) => Promise<ApiResponse<{ id: number }>>;
+        delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        list: (data: { id: number }) => Promise<ApiResponse<any[]>>;
+      };
+      inventory: {
+        create: (data: any) => Promise<ApiResponse<{ id: number }>>;
+        update: (data: any) => Promise<ApiResponse<{ success: boolean }>>;
+        delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        restore: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        adjust: (data: any) => Promise<ApiResponse<{ newQuantity: number }>>;
+        list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
+        search: (data: any) => Promise<ApiResponse<any[]>>;
+        lowStock: () => Promise<ApiResponse<any[]>>;
+        movements: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
+      };
     }
   }
 }

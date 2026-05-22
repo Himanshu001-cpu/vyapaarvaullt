@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { runMigrations } from "./database/migrate";
+import { seedDatabase } from "./database/seed";
 import { mkdirSync, existsSync } from 'fs';
 import { FileService } from './services/file.service';
 
@@ -47,7 +48,7 @@ function createWindow(): void {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.vyapaarvault.app')
 
   app.on('browser-window-created', (_, window) => {
@@ -60,8 +61,10 @@ app.whenReady().then(() => {
   require("./ipc/backup.handlers").registerBackupHandlers();
   require("./ipc/audit.handlers").registerAuditHandlers();
   require("./ipc/party.handlers").registerPartyHandlers();
+  require("./ipc/inventory.handlers").registerInventoryHandlers();
 
   runMigrations();
+  await seedDatabase();
   createWindow()
 
   app.on('activate', function () {

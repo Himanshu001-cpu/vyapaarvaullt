@@ -4,6 +4,7 @@ import { ThemeProvider } from './components/theme-provider'
 import { PinLockPage } from './pages/PinLockPage'
 import { CustomersPage } from './pages/CustomersPage'
 import { SuppliersPage } from './pages/SuppliersPage'
+import { InventoryPage } from './pages/InventoryPage'
 import { Toaster } from './components/feedback/Toaster'
 
 export default function App() {
@@ -33,6 +34,8 @@ export default function App() {
         return <CustomersPage />
       case '#/suppliers':
         return <SuppliersPage />
+      case '#/inventory':
+        return <InventoryPage />
       default:
         return (
           <div className="flex flex-col gap-4">
@@ -41,7 +44,7 @@ export default function App() {
               <div className="p-6">
                 <h3 className="font-semibold leading-none tracking-tight">VyapaarVault Portable</h3>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Phase 2 (Party Management) is integrated. Navigate to Customers or Suppliers to manage your contacts.
+                  Phase 3 (Inventory Management) is integrated. Navigate to Inventory to manage your products and stock.
                 </p>
               </div>
             </div>

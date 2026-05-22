@@ -1,6 +1,6 @@
 import { db } from '../database';
 import { parties, transactions, invoices } from '../database/schema';
-import { eq, like, desc, isNull, sql, and, or, SQL } from 'drizzle-orm';
+import { eq, desc, isNull, sql, and, or, SQL } from 'drizzle-orm';
 
 export interface PartyCreateData {
   name: string;
@@ -124,16 +124,17 @@ export class PartyRepository {
       }
     }
     conditions.push(isNull(parties.deleted_at));
-    conditions.push(
-      or(
-        like(parties.name, `%${query}%`),
-        like(parties.phone, `%${query}%`)
-      ) as SQL<unknown>
-    );
+    conditions.push(sql`parties_fts MATCH ${query}`);
 
     return db
-      .select()
+      .select({
+         id: parties.id,
+         name: parties.name,
+         phone: parties.phone,
+         type: parties.type
+      })
       .from(parties)
+      .innerJoin(sql`parties_fts`, eq(parties.id, sql`parties_fts.rowid`))
       .where(and(...conditions))
       .limit(limit);
   }

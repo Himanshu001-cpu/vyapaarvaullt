@@ -31,7 +31,35 @@ try {
       get: (data: unknown) => ipcRenderer.invoke('party:get', data),
       search: (data: unknown) => ipcRenderer.invoke('party:search', data),
       list: (data: unknown) => ipcRenderer.invoke('party:list', data),
-    }
+    },
+    category: {
+      create: (data: unknown) => ipcRenderer.invoke('category:create', data),
+      update: (data: unknown) => ipcRenderer.invoke('category:update', data),
+      delete: (data: unknown) => ipcRenderer.invoke('category:delete', data),
+      list: () => ipcRenderer.invoke('category:list'),
+    },
+    unit: {
+      create: (data: unknown) => ipcRenderer.invoke('unit:create', data),
+      update: (data: unknown) => ipcRenderer.invoke('unit:update', data),
+      delete: (data: unknown) => ipcRenderer.invoke('unit:delete', data),
+      list: () => ipcRenderer.invoke('unit:list'),
+    },
+    conversion: {
+      create: (data: unknown) => ipcRenderer.invoke('conversion:create', data),
+      delete: (data: unknown) => ipcRenderer.invoke('conversion:delete', data),
+      list: (data: unknown) => ipcRenderer.invoke('conversion:list', data),
+    },
+    inventory: {
+      create: (data: unknown) => ipcRenderer.invoke('inventory:create', data),
+      update: (data: unknown) => ipcRenderer.invoke('inventory:update', data),
+      delete: (data: unknown) => ipcRenderer.invoke('inventory:delete', data),
+      restore: (data: unknown) => ipcRenderer.invoke('inventory:restore', data),
+      adjust: (data: unknown) => ipcRenderer.invoke('inventory:adjust', data),
+      list: (data: unknown) => ipcRenderer.invoke('inventory:list', data),
+      search: (data: unknown) => ipcRenderer.invoke('inventory:search', data),
+      lowStock: () => ipcRenderer.invoke('inventory:lowStock'),
+      movements: (data: unknown) => ipcRenderer.invoke('inventory:movements', data),
+    },
   });
 } catch (error) {
   console.error(error);
