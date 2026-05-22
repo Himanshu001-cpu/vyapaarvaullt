@@ -71,6 +71,16 @@ declare global {
         list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
         search: (data: any) => Promise<ApiResponse<any[]>>;
       };
+      analytics: {
+        dashboard: () => Promise<ApiResponse<any>>;
+      };
+      search: {
+        global: (data: { query: string, limit?: number }) => Promise<ApiResponse<any[]>>;
+      };
+      importExport: {
+        importExcel: (data: any) => Promise<ApiResponse<any>>;
+        exportExcel: (data: any) => Promise<ApiResponse<any>>;
+      };
     }
   }
 }

@@ -1,10 +1,14 @@
 node_modules/
 dist/
 dist-electron/
+out/
 release/
 .env
 .env.local
 *.log
 temp/
 coverage/
-out/
+data/
+backups/
+exports/
+config/

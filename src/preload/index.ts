@@ -73,6 +73,16 @@ try {
       get: (data: unknown) => ipcRenderer.invoke('invoice:get', data),
       list: (data: unknown) => ipcRenderer.invoke('invoice:list', data),
       search: (data: unknown) => ipcRenderer.invoke('invoice:search', data),
+    },
+    analytics: {
+      dashboard: () => ipcRenderer.invoke('analytics:dashboard'),
+    },
+    search: {
+      global: (data: unknown) => ipcRenderer.invoke('search:global', data),
+    },
+    importExport: {
+      importExcel: (data: unknown) => ipcRenderer.invoke('import:excel', data),
+      exportExcel: (data: unknown) => ipcRenderer.invoke('export:excel', data),
     }
   });
 } catch (error) {

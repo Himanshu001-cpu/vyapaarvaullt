@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { AppLayout } from './components/layout/AppLayout'
 import { ThemeProvider } from './components/theme-provider'
 import { PinLockPage } from './pages/PinLockPage'
+import { DashboardPage } from './pages/DashboardPage'
 import { CustomersPage } from './pages/CustomersPage'
 import { SuppliersPage } from './pages/SuppliersPage'
 import { InventoryPage } from './pages/InventoryPage'
@@ -9,7 +10,12 @@ import { TransactionsPage } from './pages/TransactionsPage'
 import { InvoiceListPage } from './pages/InvoiceListPage'
 import { InvoiceCreatePage } from './pages/InvoiceCreatePage'
 import { CustomerLedgerPage } from './pages/CustomerLedgerPage'
+import { ReportsPage } from './pages/ReportsPage'
+import { SettingsPage } from './pages/SettingsPage'
+import { AuditLogsPage } from './pages/AuditLogsPage'
+import { RecycleBinPage } from './pages/RecycleBinPage'
 import { Toaster } from './components/feedback/Toaster'
+import { SearchModal } from './components/search/SearchModal'
 
 export default function App() {
   const [unlocked, setUnlocked] = useState(false)
@@ -38,6 +44,8 @@ export default function App() {
     }
 
     switch (currentRoute) {
+      case '#/':
+        return <DashboardPage />
       case '#/parties':
       case '#/customers':
         return <CustomersPage />
@@ -51,20 +59,16 @@ export default function App() {
         return <InvoiceListPage />
       case '#/invoices/new':
         return <InvoiceCreatePage />
+      case '#/reports':
+        return <ReportsPage />
+      case '#/settings':
+        return <SettingsPage />
+      case '#/audit-logs':
+        return <AuditLogsPage />
+      case '#/recycle-bin':
+        return <RecycleBinPage />
       default:
-        return (
-          <div className="flex flex-col gap-4">
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <div className="rounded-xl border bg-card text-card-foreground shadow">
-              <div className="p-6">
-                <h3 className="font-semibold leading-none tracking-tight">VyapaarVault Portable</h3>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Phase 4 (Transactions & Invoices) is integrated. Navigate the sidebar to test full invoice creation and ledger workflows.
-                </p>
-              </div>
-            </div>
-          </div>
-        )
+        return <DashboardPage />
     }
   }
 
@@ -73,6 +77,7 @@ export default function App() {
       <AppLayout>
         {renderPage()}
         <Toaster />
+        <SearchModal />
       </AppLayout>
     </ThemeProvider>
   )
