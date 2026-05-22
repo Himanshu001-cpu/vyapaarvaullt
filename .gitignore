@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-electron/
+out/
+release/
+.env
+.env.local
+*.log
+temp/
+coverage/
+data/
+backups/
+exports/
+config/
+src/main/database/migrate.ts
