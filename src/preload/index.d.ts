@@ -54,7 +54,6 @@ declare global {
         adjust: (data: any) => Promise<ApiResponse<{ newQuantity: number }>>;
         list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
         search: (data: any) => Promise<ApiResponse<any[]>>;
-        generatePdf: (data: { id: number }) => Promise<ApiResponse<{ filePath: string }>>;
         lowStock: () => Promise<ApiResponse<any[]>>;
         movements: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
       };
@@ -64,7 +63,6 @@ declare global {
         delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
         list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
         search: (data: any) => Promise<ApiResponse<any[]>>;
-        generatePdf: (data: { id: number }) => Promise<ApiResponse<{ filePath: string }>>;
       };
       invoice: {
         create: (data: any) => Promise<ApiResponse<{ invoiceId: number, invoiceNumber: string }>>;
@@ -72,7 +70,6 @@ declare global {
         get: (data: { id: number }) => Promise<ApiResponse<any>>;
         list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
         search: (data: any) => Promise<ApiResponse<any[]>>;
-        generatePdf: (data: { id: number }) => Promise<ApiResponse<{ filePath: string }>>;
       };
       analytics: {
         dashboard: () => Promise<ApiResponse<any>>;
@@ -87,7 +84,8 @@ declare global {
       dialog: {
         openFile: (options: any) => Promise<ApiResponse<string | null>>;
         saveFile: (options: any) => Promise<ApiResponse<string | null>>;
-      }
+      };
+      onStorageStatus: (callback: (status: any) => void) => () => void;
     }
   }
 }

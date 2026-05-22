@@ -63,6 +63,15 @@ export function authGuard<TRequest, TResponse>(handler: IpcHandler<TRequest, TRe
         },
       };
     }
+    if (require('../services/ssd.detector').SsdDetectorService.getIsDisconnected()) {
+      return {
+        success: false,
+        error: {
+          code: 'STORAGE_DISCONNECTED',
+          message: 'Storage device is disconnected'
+        }
+      };
+    }
     return handler(payload);
   };
 }

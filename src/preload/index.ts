@@ -73,7 +73,6 @@ try {
       get: (data: unknown) => ipcRenderer.invoke('invoice:get', data),
       list: (data: unknown) => ipcRenderer.invoke('invoice:list', data),
       search: (data: unknown) => ipcRenderer.invoke('invoice:search', data),
-      generatePdf: (data: unknown) => ipcRenderer.invoke('invoice:generatePdf', data),
     },
     analytics: {
       dashboard: () => ipcRenderer.invoke('analytics:dashboard'),
@@ -88,6 +87,12 @@ try {
     dialog: {
       openFile: (options: unknown) => ipcRenderer.invoke('dialog:openFile', options),
       saveFile: (options: unknown) => ipcRenderer.invoke('dialog:saveFile', options),
+    },
+    onStorageStatus: (callback: (status: any) => void) => {
+      ipcRenderer.on('storage:status', (_, data) => callback(data));
+      return () => {
+        ipcRenderer.removeAllListeners('storage:status');
+      };
     }
   });
 } catch (error) {

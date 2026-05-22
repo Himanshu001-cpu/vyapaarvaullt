@@ -16,9 +16,11 @@ import { AuditLogsPage } from './pages/AuditLogsPage'
 import { RecycleBinPage } from './pages/RecycleBinPage'
 import { Toaster } from './components/feedback/Toaster'
 import { SearchModal } from './components/search/SearchModal'
+import { SSDReconnectModal } from './components/modals/SSDReconnectModal';
 
 export default function App() {
   const [unlocked, setUnlocked] = useState(false)
+  const [isStorageDisconnected, setIsStorageDisconnected] = useState(false)
   const [currentRoute, setCurrentRoute] = useState(window.location.hash || '#/')
 
   useEffect(() => {
@@ -26,7 +28,13 @@ export default function App() {
       setCurrentRoute(window.location.hash || '#/')
     }
     window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+    const removeListener = window.api.onStorageStatus((status: any) => {
+      setIsStorageDisconnected(status.disconnected);
+    });
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      removeListener();
+    }
   }, [])
 
   if (!unlocked) {
@@ -78,6 +86,7 @@ export default function App() {
         {renderPage()}
         <Toaster />
         <SearchModal />
+        {isStorageDisconnected && <SSDReconnectModal />}
       </AppLayout>
     </ThemeProvider>
   )

@@ -5,6 +5,10 @@ import { runMigrations } from "./database/migrate";
 import { seedDatabase } from "./database/seed";
 import { mkdirSync, existsSync } from 'fs';
 import { FileService } from './services/file.service';
+import { SchedulerService } from './services/scheduler.service';
+import { SsdDetectorService } from './services/ssd.detector';
+import { BackupService } from './services/backup.service';
+import { LoggingService } from './services/logging.service';
 
 function setupDirectories() {
   const basePath = FileService.getBasePath();
@@ -56,6 +60,8 @@ app.whenReady().then(async () => {
   })
 
   setupDirectories();
+  SchedulerService.startDailyBackup();
+  SsdDetectorService.startMonitoring();
   require("./ipc/auth.handlers").registerAuthHandlers();
   require("./ipc/settings.handlers").registerSettingsHandlers();
   require("./ipc/backup.handlers").registerBackupHandlers();
@@ -77,6 +83,22 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+let isQuitting = false;
+app.on('before-quit', async (e) => {
+  if (!isQuitting) {
+    e.preventDefault();
+    LoggingService.info('app_closing_starting_backup');
+    try {
+      await BackupService.createBackup();
+    } catch (err) {
+      LoggingService.error('app_close_backup_failed', err);
+    } finally {
+      isQuitting = true;
+      app.quit();
+    }
+  }
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
