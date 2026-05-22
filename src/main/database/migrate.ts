@@ -7,7 +7,7 @@ export function runMigrations() {
   try {
     const migrationsFolder = app.isPackaged
       ? join(process.resourcesPath, 'app.asar/drizzle')
-      : join(__dirname, '../../drizzle');
+      : join(app.getAppPath(), 'drizzle');
 
     migrate(db, { migrationsFolder });
     console.log('Migrations applied successfully');

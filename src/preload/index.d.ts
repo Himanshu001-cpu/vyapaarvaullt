@@ -19,7 +19,16 @@ declare global {
       };
       audit: {
         list: () => Promise<ApiResponse<any[]>>;
-      }
+      };
+      party: {
+        create: (data: any) => Promise<ApiResponse<{ id: number }>>;
+        update: (data: any) => Promise<ApiResponse<{ success: boolean }>>;
+        delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        restore: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        get: (data: { id: number }) => Promise<ApiResponse<any>>;
+        search: (data: { query: string, type?: string, limit?: number }) => Promise<ApiResponse<any[]>>;
+        list: (data: { type?: string, includeDeleted?: boolean, page?: number, pageSize?: number }) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
+      };
     }
   }
 }

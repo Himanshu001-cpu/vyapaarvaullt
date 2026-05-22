@@ -22,6 +22,15 @@ try {
     },
     audit: {
       list: () => ipcRenderer.invoke('audit:list'),
+    },
+    party: {
+      create: (data: unknown) => ipcRenderer.invoke('party:create', data),
+      update: (data: unknown) => ipcRenderer.invoke('party:update', data),
+      delete: (data: unknown) => ipcRenderer.invoke('party:delete', data),
+      restore: (data: unknown) => ipcRenderer.invoke('party:restore', data),
+      get: (data: unknown) => ipcRenderer.invoke('party:get', data),
+      search: (data: unknown) => ipcRenderer.invoke('party:search', data),
+      list: (data: unknown) => ipcRenderer.invoke('party:list', data),
     }
   });
 } catch (error) {

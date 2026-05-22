@@ -3,16 +3,10 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { runMigrations } from "./database/migrate";
 import { mkdirSync, existsSync } from 'fs';
+import { FileService } from './services/file.service';
 
 function setupDirectories() {
-  const getBasePath = () => {
-    if (app.isPackaged) {
-      return process.env.PORTABLE_EXECUTABLE_DIR || app.getPath('exe').replace(/\\[^\\]+$/, '');
-    }
-    return app.getPath('userData');
-  };
-
-  const basePath = getBasePath();
+  const basePath = FileService.getBasePath();
   const dirs = ['data', 'data/temp', 'backups', 'exports', 'logs', 'config'];
 
   dirs.forEach(dir => {
@@ -65,6 +59,7 @@ app.whenReady().then(() => {
   require("./ipc/settings.handlers").registerSettingsHandlers();
   require("./ipc/backup.handlers").registerBackupHandlers();
   require("./ipc/audit.handlers").registerAuditHandlers();
+  require("./ipc/party.handlers").registerPartyHandlers();
 
   runMigrations();
   createWindow()

@@ -8,6 +8,7 @@
     "build": "electron-vite build",
     "build:win": "electron-vite build && electron-builder --win --x64",
     "build:portable": "electron-vite build && electron-builder --win portable --x64",
+    "build:linux": "electron-vite build && electron-builder --linux AppImage --x64",
     "preview": "electron-vite preview",
     "lint": "eslint . --ext js,ts,jsx,tsx",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
@@ -60,6 +61,11 @@
     "productName": "VyapaarVault Portable",
     "directories": {
       "output": "release/${version}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
     },
     "win": {
       "target": [

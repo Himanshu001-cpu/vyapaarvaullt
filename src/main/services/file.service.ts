@@ -1,10 +1,13 @@
 import { app } from 'electron';
-import { join } from 'path';
+import { join, dirname } from 'path';
 
 export class FileService {
   static getBasePath(): string {
     if (app.isPackaged) {
-      return process.env.PORTABLE_EXECUTABLE_DIR || app.getPath('exe').replace(/\\[^\\]+$/, '');
+      if (process.platform === 'linux' && process.env.APPIMAGE) {
+        return dirname(process.env.APPIMAGE);
+      }
+      return process.env.PORTABLE_EXECUTABLE_DIR || dirname(app.getPath('exe'));
     }
     return app.getPath('userData');
   }
