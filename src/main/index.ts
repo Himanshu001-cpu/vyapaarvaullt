@@ -62,6 +62,8 @@ app.whenReady().then(async () => {
   require("./ipc/audit.handlers").registerAuditHandlers();
   require("./ipc/party.handlers").registerPartyHandlers();
   require("./ipc/inventory.handlers").registerInventoryHandlers();
+  require("./ipc/transaction.handlers").registerTransactionHandlers();
+  require("./ipc/invoice.handlers").registerInvoiceHandlers();
 
   runMigrations();
   await seedDatabase();

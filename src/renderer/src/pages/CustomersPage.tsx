@@ -77,7 +77,7 @@ export function CustomersPage() {
                   <td className="px-6 py-4 font-medium">{party.name}</td>
                   <td className="px-6 py-4">{party.phone || '-'}</td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-primary hover:underline">View</button>
+                    <a href={`#/party/${party.id}`} className="text-primary hover:underline">View Ledger</a>
                   </td>
                 </tr>
               ))}

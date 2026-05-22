@@ -57,6 +57,20 @@ declare global {
         lowStock: () => Promise<ApiResponse<any[]>>;
         movements: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
       };
+      transaction: {
+        create: (data: any) => Promise<ApiResponse<{ id: number }>>;
+        update: (data: any) => Promise<ApiResponse<{ success: boolean }>>;
+        delete: (data: { id: number }) => Promise<ApiResponse<{ success: boolean }>>;
+        list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
+        search: (data: any) => Promise<ApiResponse<any[]>>;
+      };
+      invoice: {
+        create: (data: any) => Promise<ApiResponse<{ invoiceId: number, invoiceNumber: string }>>;
+        void: (data: { id: number, reason?: string }) => Promise<ApiResponse<{ success: boolean }>>;
+        get: (data: { id: number }) => Promise<ApiResponse<any>>;
+        list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
+        search: (data: any) => Promise<ApiResponse<any[]>>;
+      };
     }
   }
 }

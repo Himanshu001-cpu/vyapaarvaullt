@@ -5,6 +5,10 @@ import { PinLockPage } from './pages/PinLockPage'
 import { CustomersPage } from './pages/CustomersPage'
 import { SuppliersPage } from './pages/SuppliersPage'
 import { InventoryPage } from './pages/InventoryPage'
+import { TransactionsPage } from './pages/TransactionsPage'
+import { InvoiceListPage } from './pages/InvoiceListPage'
+import { InvoiceCreatePage } from './pages/InvoiceCreatePage'
+import { CustomerLedgerPage } from './pages/CustomerLedgerPage'
 import { Toaster } from './components/feedback/Toaster'
 
 export default function App() {
@@ -28,6 +32,11 @@ export default function App() {
   }
 
   const renderPage = () => {
+    if (currentRoute.startsWith('#/party/')) {
+        const id = parseInt(currentRoute.split('/')[2], 10);
+        return <CustomerLedgerPage partyId={id} />;
+    }
+
     switch (currentRoute) {
       case '#/parties':
       case '#/customers':
@@ -36,6 +45,12 @@ export default function App() {
         return <SuppliersPage />
       case '#/inventory':
         return <InventoryPage />
+      case '#/transactions':
+        return <TransactionsPage />
+      case '#/invoices':
+        return <InvoiceListPage />
+      case '#/invoices/new':
+        return <InvoiceCreatePage />
       default:
         return (
           <div className="flex flex-col gap-4">
@@ -44,7 +59,7 @@ export default function App() {
               <div className="p-6">
                 <h3 className="font-semibold leading-none tracking-tight">VyapaarVault Portable</h3>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Phase 3 (Inventory Management) is integrated. Navigate to Inventory to manage your products and stock.
+                  Phase 4 (Transactions & Invoices) is integrated. Navigate the sidebar to test full invoice creation and ledger workflows.
                 </p>
               </div>
             </div>

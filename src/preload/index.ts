@@ -60,6 +60,20 @@ try {
       lowStock: () => ipcRenderer.invoke('inventory:lowStock'),
       movements: (data: unknown) => ipcRenderer.invoke('inventory:movements', data),
     },
+    transaction: {
+      create: (data: unknown) => ipcRenderer.invoke('transaction:create', data),
+      update: (data: unknown) => ipcRenderer.invoke('transaction:update', data),
+      delete: (data: unknown) => ipcRenderer.invoke('transaction:delete', data),
+      list: (data: unknown) => ipcRenderer.invoke('transaction:list', data),
+      search: (data: unknown) => ipcRenderer.invoke('transaction:search', data),
+    },
+    invoice: {
+      create: (data: unknown) => ipcRenderer.invoke('invoice:create', data),
+      void: (data: unknown) => ipcRenderer.invoke('invoice:void', data),
+      get: (data: unknown) => ipcRenderer.invoke('invoice:get', data),
+      list: (data: unknown) => ipcRenderer.invoke('invoice:list', data),
+      search: (data: unknown) => ipcRenderer.invoke('invoice:search', data),
+    }
   });
 } catch (error) {
   console.error(error);

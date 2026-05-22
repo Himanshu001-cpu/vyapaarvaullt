@@ -46,6 +46,11 @@ export class UnitRepository {
     return db.select().from(units).orderBy(units.name);
   }
 
+  static async getById(id: number) {
+    const result = await db.select().from(units).where(eq(units.id, id)).limit(1);
+    return result[0] || null;
+  }
+
   static async getByName(name: string) {
     const result = await db.select().from(units).where(eq(units.name, name)).limit(1);
     return result[0] || null;
