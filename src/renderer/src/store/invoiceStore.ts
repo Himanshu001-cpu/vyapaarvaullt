@@ -15,6 +15,9 @@ export interface Invoice {
   invoice_number: string;
   party_id: number;
   party_name: string | null;
+  subtotal: number;
+  discount: number | null;
+  extra_charges: number | null;
   total_amount: number;
   amount_paid: number;
   pending_amount: number;

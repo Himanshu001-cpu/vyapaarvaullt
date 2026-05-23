@@ -73,6 +73,7 @@ try {
       get: (data: unknown) => ipcRenderer.invoke('invoice:get', data),
       list: (data: unknown) => ipcRenderer.invoke('invoice:list', data),
       search: (data: unknown) => ipcRenderer.invoke('invoice:search', data),
+      generatePdf: (data: unknown) => ipcRenderer.invoke('invoice:generatePdf', data),
     },
     analytics: {
       dashboard: () => ipcRenderer.invoke('analytics:dashboard'),

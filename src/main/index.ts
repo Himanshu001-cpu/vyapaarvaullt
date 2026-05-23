@@ -10,6 +10,20 @@ import { SsdDetectorService } from './services/ssd.detector';
 import { BackupService } from './services/backup.service';
 import { LoggingService } from './services/logging.service';
 
+import { registerAuthHandlers } from './ipc/auth.handlers';
+import { registerSettingsHandlers } from './ipc/settings.handlers';
+import { registerBackupHandlers } from './ipc/backup.handlers';
+import { registerAuditHandlers } from './ipc/audit.handlers';
+import { registerPartyHandlers } from './ipc/party.handlers';
+import { registerInventoryHandlers } from './ipc/inventory.handlers';
+import { registerTransactionHandlers } from './ipc/transaction.handlers';
+import { registerInvoiceHandlers } from './ipc/invoice.handlers';
+import { registerAnalyticsHandlers } from './ipc/analytics.handlers';
+import { registerSearchHandlers } from './ipc/search.handlers';
+import { registerImportExportHandlers } from './ipc/import-export.handlers';
+import { registerDialogHandlers } from './ipc/dialog.handlers';
+import { registerUndoHandlers } from './ipc/undo.handlers';
+
 function setupDirectories() {
   const basePath = FileService.getBasePath();
   const dirs = ['data', 'data/temp', 'backups', 'exports', 'logs', 'config'];
@@ -62,21 +76,22 @@ app.whenReady().then(async () => {
   setupDirectories();
   SchedulerService.startDailyBackup();
   SsdDetectorService.startMonitoring();
-  require("./ipc/auth.handlers").registerAuthHandlers();
-  require("./ipc/settings.handlers").registerSettingsHandlers();
-  require("./ipc/backup.handlers").registerBackupHandlers();
-  require("./ipc/audit.handlers").registerAuditHandlers();
-  require("./ipc/party.handlers").registerPartyHandlers();
-  require("./ipc/inventory.handlers").registerInventoryHandlers();
-  require("./ipc/transaction.handlers").registerTransactionHandlers();
-  require("./ipc/invoice.handlers").registerInvoiceHandlers();
-  require("./ipc/analytics.handlers").registerAnalyticsHandlers();
-  require("./ipc/search.handlers").registerSearchHandlers();
-  require("./ipc/import-export.handlers").registerImportExportHandlers();
-  require("./ipc/dialog.handlers").registerDialogHandlers();
-  require("./ipc/undo.handlers").registerUndoHandlers();
 
-  runMigrations();
+  registerAuthHandlers();
+  registerSettingsHandlers();
+  registerBackupHandlers();
+  registerAuditHandlers();
+  registerPartyHandlers();
+  registerInventoryHandlers();
+  registerTransactionHandlers();
+  registerInvoiceHandlers();
+  registerAnalyticsHandlers();
+  registerSearchHandlers();
+  registerImportExportHandlers();
+  registerDialogHandlers();
+  registerUndoHandlers();
+
+  await runMigrations();
   await seedDatabase();
   createWindow()
 

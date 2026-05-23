@@ -1,6 +1,7 @@
 import { registerIpcHandler, authGuard } from './index';
 import { AuthService } from '../services/auth.service';
 import { loginSchema, setupPinSchema, changePinSchema } from '../validation/auth.schema';
+import { getAuthenticated } from './state';
 
 export function registerAuthHandlers() {
   registerIpcHandler('auth:checkPinSet', null, async () => {
@@ -31,7 +32,6 @@ export function registerAuthHandlers() {
   }));
 
   registerIpcHandler('auth:validateSession', null, async () => {
-    const { getAuthenticated } = require('./index');
     return { success: true, data: { isValid: getAuthenticated() } };
   });
 }

@@ -8,7 +8,7 @@ import { join } from 'path';
 import { writeFileSync } from 'fs';
 
 export class ExportService {
-  static async exportExcel(reportType: string, filters?: any) {
+  static async exportExcel(reportType: string, _filters?: any) {
     try {
       LoggingService.info('export_started', { reportType });
       const exportsDir = FileService.getBasePath() + '/exports';

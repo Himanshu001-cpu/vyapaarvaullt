@@ -10,7 +10,7 @@ import { UnitConversionEditor } from '../components/inventory/UnitConversionEdit
 interface BaseLookup { id: number; name: string; }
 
 export function InventoryPage() {
-  const { products, isLoading, error, loadProducts, createProduct, adjustStock } = useInventoryStore();
+  const { products, isLoading, error, loadProducts, createProduct, adjustStock, deleteProduct } = useInventoryStore();
   const { toast } = useToast();
 
   const [isCreating, setIsCreating] = useState(false);
@@ -68,6 +68,16 @@ export function InventoryPage() {
      const success = await adjustStock(id, change, "Manual adjustment");
      if (success) {
          toast({ title: 'Stock Adjusted', description: `Stock adjusted by ${change}.` });
+     }
+  };
+
+  const handleDelete = async (id: number, name: string) => {
+     if (confirm(`Are you sure you want to delete "${name}"?`)) {
+       const success = await deleteProduct(id);
+       if (success) {
+         toast({ title: 'Product Deleted', description: `${name} has been successfully deleted.` });
+         loadProducts();
+       }
      }
   };
 
@@ -189,6 +199,7 @@ export function InventoryPage() {
                     <div className="flex justify-end gap-2 mb-2">
                       <button onClick={() => handleAdjustStock(product.id, 1)} className="px-2 py-1 bg-secondary rounded text-xs">+</button>
                       <button onClick={() => handleAdjustStock(product.id, -1)} className="px-2 py-1 bg-secondary rounded text-xs">-</button>
+                      <button onClick={() => handleDelete(product.id, product.name)} className="px-2 py-1 bg-destructive/10 text-destructive border border-destructive/20 rounded text-xs hover:bg-destructive hover:text-destructive-foreground">Delete</button>
                     </div>
                     <button
                       onClick={() => setSelectedProductId(selectedProductId === product.id ? null : product.id)}

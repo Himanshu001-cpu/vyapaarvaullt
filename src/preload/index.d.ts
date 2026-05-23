@@ -70,6 +70,7 @@ declare global {
         get: (data: { id: number }) => Promise<ApiResponse<any>>;
         list: (data: any) => Promise<ApiResponse<{ data: any[], total: number, page: number, pageSize: number }>>;
         search: (data: any) => Promise<ApiResponse<any[]>>;
+        generatePdf: (data: { id: number }) => Promise<ApiResponse<{ filePath: string }>>;
       };
       analytics: {
         dashboard: () => Promise<ApiResponse<any>>;

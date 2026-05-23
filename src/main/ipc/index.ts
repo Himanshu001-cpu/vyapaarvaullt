@@ -1,6 +1,8 @@
 import { ipcMain } from 'electron';
 import { ApiResponse } from '../types';
 import { ZodType } from 'zod';
+import { SsdDetectorService } from '../services/ssd.detector';
+import { getAuthenticated } from './state';
 
 export type IpcHandler<TRequest, TResponse> = (payload: TRequest) => Promise<ApiResponse<TResponse>>;
 
@@ -41,20 +43,11 @@ export function registerIpcHandler<TRequest, TResponse>(
   });
 }
 
-// In-memory session state
-let isAuthenticated = false;
-
-export function setAuthenticated(status: boolean) {
-  isAuthenticated = status;
-}
-
-export function getAuthenticated() {
-  return isAuthenticated;
-}
+export { setAuthenticated, getAuthenticated } from './state';
 
 export function authGuard<TRequest, TResponse>(handler: IpcHandler<TRequest, TResponse>): IpcHandler<TRequest, TResponse> {
   return async (payload: TRequest) => {
-    if (!isAuthenticated) {
+    if (!getAuthenticated()) {
       return {
         success: false,
         error: {
@@ -63,7 +56,7 @@ export function authGuard<TRequest, TResponse>(handler: IpcHandler<TRequest, TRe
         },
       };
     }
-    if (require('../services/ssd.detector').SsdDetectorService.getIsDisconnected()) {
+    if (SsdDetectorService.getIsDisconnected()) {
       return {
         success: false,
         error: {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from '../store/settingsStore';
-import { useAuthStore } from '../store/authStore';
 import { LoadingState } from '../components/feedback/States';
 import { useToast } from '../hooks/use-toast';
 import { useImportExportStore } from '../store/importExportStore';

@@ -2,6 +2,10 @@ import { db } from '../database';
 import { InvoiceRepository, InvoiceCreateData } from '../repositories/invoice.repository';
 import { InvoiceItemRepository, InvoiceItemCreateData } from '../repositories/invoice-item.repository';
 import { ProductRepository } from '../repositories/product.repository';
+import { BrowserWindow } from 'electron';
+import { FileService } from './file.service';
+import { join } from 'path';
+import { writeFileSync } from 'fs';
 import { PartyRepository } from '../repositories/party.repository';
 import { StockMovementRepository } from '../repositories/stock-movement.repository';
 import { TransactionRepository } from '../repositories/transaction.repository';
@@ -201,7 +205,7 @@ export class InvoiceService {
              <div>
                 <h2>INVOICE</h2>
                 <p><strong>#${invoice.invoice_number}</strong></p>
-                <p>Date: ${new Date(invoice.created_at).toLocaleDateString()}</p>
+                <p>Date: ${invoice.created_at ? new Date(invoice.created_at).toLocaleDateString() : 'N/A'}</p>
              </div>
              <div style="text-align: right;">
                 <h3>Bill To:</h3>
@@ -239,11 +243,6 @@ export class InvoiceService {
     `;
 
     return new Promise((resolve, reject) => {
-      const { BrowserWindow } = require('electron');
-      const { FileService } = require('./file.service');
-      const { join } = require('path');
-      const { writeFileSync } = require('fs');
-
       const win = new BrowserWindow({ show: false });
       win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
 

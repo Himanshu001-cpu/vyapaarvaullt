@@ -20,7 +20,11 @@ export class LoggingService {
     };
 
     try {
-      appendFileSync(this.getLogFile(), JSON.stringify(logEntry) + '\n');
+      const logFile = this.getLogFile();
+      const fs = require('fs');
+      const dirname = require('path').dirname;
+      fs.mkdirSync(dirname(logFile), { recursive: true });
+      appendFileSync(logFile, JSON.stringify(logEntry) + '\n');
     } catch (e) {
       console.error('Failed to write to log file', e);
     }

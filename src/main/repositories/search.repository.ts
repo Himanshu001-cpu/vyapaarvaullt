@@ -1,6 +1,6 @@
 import { db } from '../database';
 import { parties, products, transactions } from '../database/schema';
-import { sql, isNull, and, or, like } from 'drizzle-orm';
+import { sql, isNull, and, eq } from 'drizzle-orm';
 
 export interface GlobalSearchResult {
   entityType: 'party' | 'product' | 'transaction';

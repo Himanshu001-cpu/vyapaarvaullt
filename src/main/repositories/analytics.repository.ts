@@ -83,7 +83,7 @@ export class AnalyticsRepository {
       .innerJoin(parties, eq(invoices.party_id, parties.id))
       .where(and(isNull(invoices.deleted_at), eq(invoices.status, 'completed'), eq(parties.type, 'customer')))
       .groupBy(parties.id)
-      .orderBy(desc(sql`totalAmount`))
+      .orderBy(desc(sql`SUM(${invoices.total_amount})`))
       .limit(limit);
   }
 
